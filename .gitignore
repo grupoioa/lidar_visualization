@@ -1,0 +1,8 @@
+__pycache__
+*.swp
+.idea
+*.pyc
+*.csv
+tags
+/images/*
+/ImageViewer/nbproject
