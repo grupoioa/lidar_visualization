@@ -1,9 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 var ppiAnim;
 var rhiAnim;
 var all_winds_anim;
@@ -16,8 +10,7 @@ $( window ).resize(function() {
 	wind_mag_anim.updateSize();
 });
 
-
-
+// This is the main function. It initalizes the date, and all the animation objects
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip({
 		trigger : 'hover'
@@ -25,29 +18,47 @@ $(function () {
 	$('.popover-dismiss').popover({
 		trigger: 'hover'
 	});
+	
+	var today_date = new Date()
+	var anim_date = today_date.toISOString().split('T')[0]; // Gets todays date
+	updateAnimations(anim_date);
 
-	// This object contains the names of the PPI images
-	var ppiNames = filterNames(img_names, 'PPI');
-				
-	ppiAnim = new Animation(ppiNames, 'ppi_canvas', 'ppiAnim');
-	//Start loading the images and playing the animation. 
-	// It starts with a height of 50% of the window size
-	ppiAnim.init();
+    $( "#datepicker" ).datepicker({
+			"dateFormat":"yy-mm-dd",
+			"onSelect":function(selected_date){
+				updateAnimations(selected_date);
+			}
+		});
+    $( "#datepicker" ).datepicker("setDate",anim_date);
 
-	// This object contains the names of the RHI images
-	var rhiNames = filterNames(img_names, 'RHI');
-	rhiAnim = new Animation(rhiNames, 'rhi_canvas', 'rhiAnim');
-	rhiAnim.init();
-
-	var all_winds_Names = filterNames(img_names, 'Allvel');
-	all_winds_anim = new Animation(all_winds_Names, 'all_winds_canvas', 'all_winds_anim');
-	all_winds_anim.init();
-
-	var wind_mag_Names = filterNames(img_names, 'Magnitude');
-	wind_mag_anim = new Animation(wind_mag_Names, 'wind_mag_canvas', 'wind_mag_anim');
-	wind_mag_anim.init();
-
+	ppiAnim = new Animation([], 'ppi_canvas', 'ppiAnim');
+	rhiAnim = new Animation([], 'rhi_canvas', 'rhiAnim');
+	all_winds_anim = new Animation([], 'all_winds_canvas', 'all_winds_anim');
+	wind_mag_anim = new Animation([], 'wind_mag_canvas', 'wind_mag_anim');
 });
+
+function updateAnimations(anim_date){
+	console.log("Updating animation with date: "+anim_date+"...");
+
+	var cur_path = window.location.href;
+	cur_path = cur_path.replace("index.php","")
+
+	var url = cur_path+'getImages.php?date='+anim_date;
+	d3.json(url).then(function(img_names){ 
+		console.log("Received files:"+img_names);
+		// This object contains the names of the PPI images
+		var ppiNames = filterNames(img_names, 'PPI');
+		var rhiNames = filterNames(img_names, 'RHI');
+		var all_winds_Names = filterNames(img_names, 'Allvel');
+		var wind_mag_Names = filterNames(img_names, 'Magnitude');
+					
+		ppiAnim.updateDates(ppiNames);
+		rhiAnim.updateDates(rhiNames);
+		all_winds_anim.updateDates(all_winds_Names);
+		wind_mag_anim.updateDates(wind_mag_Names);
+
+	});
+}
 
 function toggledisplay(elementID)
 {

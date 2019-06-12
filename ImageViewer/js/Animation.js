@@ -11,16 +11,21 @@ class Animation{
 	 * @returns {Animation}
 	 */
 	constructor(imgNames, canvasId, globalObjectName){
-		this.imgNames = imgNames;
 		this.canvas = document.getElementById(canvasId);
 		this.ctx = this.canvas.getContext("2d");
+		this.currSpeed = 1;//1 Frame por segundo
+		this.name = globalObjectName;
+		this.updateDates(imgNames)
+	}
+
+	updateDates(imgNames){
+		this.images = [];
+		this.imgNames = imgNames;
 		this.totImgs = imgNames.length;
 		this.totImgLoaded = 0;
-		this.images = [];
 		this.status = 'pause';
 		this.currImg = 0;
-		this.currSpeed =  1;//1 Frame por segundo
-		this.name = globalObjectName;
+		this.init();
 	}
 
 	updateSize(){

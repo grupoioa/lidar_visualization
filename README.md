@@ -1,6 +1,6 @@
-Anaconda install
-==================
+# Download and process program
 
+## Install
 
 ```
     conda install mysql-connector-python
@@ -77,3 +77,5 @@ call lidar.get_environmental_data('2017-04-26 12:00:00','2017-04-26 13:00:00')
 which the temperature falls at a rate of approximately 10 C/km, provided it is free of clouds
 
 **Residual Layer**: 
+
+# Visualization 
